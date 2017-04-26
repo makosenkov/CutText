@@ -1,13 +1,16 @@
 /**
  * Created by Михаил
  */
+
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class CutTheTextLauncher {
+public final class CutTheTextLauncher {
     @Option(name = "-c", usage = "Symbols")
     private boolean symb = false;
 
@@ -34,25 +37,33 @@ public class CutTheTextLauncher {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
-            System.err.println("java -jar CutTheText.jar [-c|-w] [-o ofile] [file] range");
+            System.err.println("java -jar TextCut.jar [-c|-w] [-o ofile] [file] range");
             parser.printUsage(System.err);
             return;
         }
 
         try {
             if ((symb && word) || (!symb && !word)) System.out.println("Wrong format (-c or -w)");
+
+            String[] lines;
+
+            if (inputFileName.equals("")) lines = TextCmdReader.read();
             else{
-                CutTheText cut = new CutTheText(symb, word, outputFileName, inputFileName, range);
-                cut.writeCut(inputFileName, outputFileName);
-                System.out.println("Operation success");
+                try {
+                    lines = FileWork.read(inputFileName);
+                } catch (FileNotFoundException e) {
+                    System.out.println("Incorrect input file name");
+                }
             }
 
-            if (outputFileName.equals("")) System.out.println("Error: the name of output file is not signed");
-            else {
-                CutTheText cut = new CutTheText(symb, word, outputFileName, inputFileName, range);
-                cut.writeCut(inputFileName, outputFileName);
-                System.out.println("Operation success");
+            String[] newLines = Cutter.cut(range, lines);
+
+            try {
+                FileWork.write(newLines, outputFileName);
+            }catch (FileNotFoundException){
+                System.out.println("Incorrect output file name");
             }
+
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
