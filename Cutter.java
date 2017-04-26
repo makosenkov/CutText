@@ -38,7 +38,6 @@ public final class Cutter {
 
         for (int i = 0; i < lines.length - 2; i++) {
             if (symb) newLines.add(lines[i].substring(begin, end + 1));
-
             if (word) {
                 List<String> words = new ArrayList<>();
                 words.addAll(Arrays.asList(lines[i].split(" ")));

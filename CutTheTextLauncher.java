@@ -49,7 +49,7 @@ public final class CutTheTextLauncher {
 
             if (inputFileName.equals("")) lines = TextCmdReader.read();
             else {
-                try {
+                try{
                     lines = FileWork.read(inputFileName);
                 } catch (FileNotFoundException e) {
                     System.out.println("Incorrect input file name");

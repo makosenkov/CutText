@@ -22,6 +22,7 @@ public final class FileWork {
         return lines.toArray(new String[lines.size()]);
     }
 
+
     public static void write(String[] newLines, String outputFileName) throws IOException {
         File file = new File(outputFileName);
         if (file.exists() || file.isDirectory()) throw new FileNotFoundException();
