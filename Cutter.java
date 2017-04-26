@@ -19,7 +19,6 @@ public final class Cutter {
     public String[] cut(String range, String[] lines) {
         int begin = 0;
         int end = 0;
-
         if (range.matches("-\\d")) {
             begin = 0;
             end = Integer.parseInt(range.split("")[1]);

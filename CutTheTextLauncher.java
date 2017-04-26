@@ -48,7 +48,7 @@ public final class CutTheTextLauncher {
             String[] lines;
 
             if (inputFileName.equals("")) lines = TextCmdReader.read();
-            else{
+            else {
                 try {
                     lines = FileWork.read(inputFileName);
                 } catch (FileNotFoundException e) {
@@ -60,7 +60,7 @@ public final class CutTheTextLauncher {
 
             try {
                 FileWork.write(newLines, outputFileName);
-            }catch (FileNotFoundException){
+            } catch (FileNotFoundException) {
                 System.out.println("Incorrect output file name");
             }
 
