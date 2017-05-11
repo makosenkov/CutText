@@ -6,34 +6,16 @@ import java.util.*;
  */
 
 public final class Cutter {
-    private final boolean symb;
-    private final boolean word;
-    private final String range;
+    private boolean symb;
+    private rangeParser newRange;
 
-    public Cutter(boolean symb, boolean word, String range) {
+    public Cutter(boolean symb, rangeParser newRange) {
         this.symb = symb;
-        this.word = word;
-        this.range = range;
+        this.newRange = newRange;
     }
 
-    public String[] cut(String range, String[] lines) {
-        int begin = 0;
-        int end = 0;
-        if (range.matches("-\\d")) {
-            begin = 0;
-            end = Integer.parseInt(range.split("")[1]);
-        }
-
-        if (range.matches("\\d-")) {
-            begin = Integer.parseInt(range.split("")[1]);
-            end = 0;
-        }
-
-        if (range.matches("\\d-\\d")) {
-            begin = Integer.parseInt(range.split("")[0]);
-            end = Integer.parseInt(range.split("")[2]);
-        }
-
+    public ArrayList<String> cut(rangeParser newRange, ArrayList<String> lines) {
+//нужно переделать полностью, использовать StringBuilder
         ArrayList<String> newLines = new ArrayList<>();
 
         for (int i = 0; i < lines.length - 2; i++) {

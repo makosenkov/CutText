@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public final class FileWork {
 
-    public static String[] read(String inputFileName) throws IOException {
-        File file = new File(inputFileName);
-        if (!file.exists() || file.isDirectory()) throw new FileNotFoundException();
+//всунуть чтение из консоли
+
+    public static ArrayList<String> read(String inputFileName) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
-        try (FileInputStream inputStream = new FileInputStream(inputFileName)) {
+         try (FileInputStream inputStream = new FileInputStream(inputFileName)) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String line = reader.readLine();
                 do {
@@ -19,16 +19,14 @@ public final class FileWork {
                 } while (line != null);
             }
         }
-        return lines.toArray(new String[lines.size()]);
+        return lines;
     }
 
 
-    public static void write(String[] newLines, String outputFileName) throws IOException {
-        File file = new File(outputFileName);
-        if (file.exists() || file.isDirectory()) throw new FileNotFoundException();
+    public static void write(ArrayList<String> newLines, String outputFileName) throws IOException {
         try (FileOutputStream outputStream = new FileOutputStream(outputFileName)) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
-                for (int i = 0; i < newLines.length - 1; i++) {
+                for (int i = 0; i < newLines.size() - 1; i++) {
                     writer.write(newLines[i]);
                 }
                 writer.close();

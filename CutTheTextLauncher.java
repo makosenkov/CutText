@@ -9,13 +9,17 @@ import org.kohsuke.args4j.Option;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public final class CutTheTextLauncher {
+
+//Нужно сделать одну переменную symb
+
     @Option(name = "-c", usage = "Symbols")
     private boolean symb = false;
 
     @Option(name = "-w", usage = "Words")
-    private boolean word = false;
+    private boolean symb = true;
 
     @Option(name = "-o", metaVar = "OutputFile", usage = "output filename")
     private String outputFileName = "";
@@ -43,9 +47,9 @@ public final class CutTheTextLauncher {
         }
 
         try {
-            if ((symb && word) || (!symb && !word)) System.out.println("Wrong format (-c or -w)");
+            if (symb) System.out.println("Wrong format (-c or -w)");
 
-            String[] lines;
+            ArrayList<String> lines;
 
             if (inputFileName.equals("")) lines = TextCmdReader.read();
             else {
@@ -56,11 +60,14 @@ public final class CutTheTextLauncher {
                 }
             }
 
-            String[] newLines = Cutter.cut(range, lines);
+//Решить проблему со взаимодействием
+
+            Cutter cutter = new Cutter(symb, newRange);
+            ArrayList<String> newLines = cutter.cut(range, lines);
 
             try {
                 FileWork.write(newLines, outputFileName);
-            } catch (FileNotFoundException) {
+            } catch (FileNotFoundException e) {
                 System.out.println("Incorrect output file name");
             }
 
