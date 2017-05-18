@@ -1,37 +1,42 @@
 import java.util.*;
 
-
-/**
- * Created by Михаил on 26.04.2017.
- */
-
 public final class Cutter {
     private boolean symb;
-    private rangeParser newRange;
+    private int begin;
+    private int end;
 
-    public Cutter(boolean symb, rangeParser newRange) {
+    public Cutter(boolean symb, int begin, int end) {
         this.symb = symb;
-        this.newRange = newRange;
+        this.begin = begin;
+        this.end = end;
     }
 
-    public ArrayList<String> cut(rangeParser newRange, ArrayList<String> lines) {
-//нужно переделать полностью, использовать StringBuilder
-        ArrayList<String> newLines = new ArrayList<>();
+    public ArrayList<String> cut(int begin, int end, ArrayList<String> lines, boolean symb) {
+        //Вычисление диапазона
+        int buf = lines.get(0).length();
 
-        for (int i = 0; i < lines.length - 2; i++) {
-            if (symb) newLines.add(lines[i].substring(begin, end + 1));
-            if (word) {
-                List<String> words = new ArrayList<>();
-                words.addAll(Arrays.asList(lines[i].split(" ")));
-                words = words.subList(begin, end + 1);
-                String line = "";
-                for (int k = 0; k < words.size() - 2; k++) {
-                    line += words.get(k) + " ";
-                }
-                line += words.get(words.size() - 1);
-                newLines.add(line);
-            }
+        for (int i = 0; i < lines.size() - 1; i++) {
+            if (lines.get(i).length() > buf) buf = lines.get(i).length();
         }
-        return newLines.toArray(new String[newLines.size()]);
+
+        boolean BeginIsWrong = (begin > buf);
+        if (BeginIsWrong) throw new IndexOutOfBoundsException();
+        end = Math.min(buf, end);
+
+        ArrayList<String> newLines = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
+
+        for (String line : lines) {
+            //Посимвольно
+            if (symb) builder.append(line, begin, end);
+            else {
+                //По словам
+                String[] words = line.split(" ");
+                for (int i = begin; i <= end; i++)
+                    builder.append(words[i]);
+            }
+            newLines.add(builder.toString());
+        }
+        return newLines;
     }
 }

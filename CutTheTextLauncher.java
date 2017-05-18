@@ -1,7 +1,3 @@
-/**
- * Created by Михаил
- */
-
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -13,18 +9,13 @@ import java.util.ArrayList;
 
 public final class CutTheTextLauncher {
 
-//Нужно сделать одну переменную symb
-
     @Option(name = "-c", usage = "Symbols")
-    private boolean symb = false;
-
-    @Option(name = "-w", usage = "Words")
     private boolean symb = true;
 
     @Option(name = "-o", metaVar = "OutputFile", usage = "output filename")
     private String outputFileName = "";
 
-    @Argument(metaVar = "InputName", usage = "input filename")
+    @Argument(metaVar = "InputFile", usage = "input filename")
     private String inputFileName = "";
 
     @Argument(metaVar = "range", usage = "input range")
@@ -41,29 +32,36 @@ public final class CutTheTextLauncher {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
-            System.err.println("java -jar TextCut.jar [-c|-w] [-o ofile] [file] range");
+            System.err.println("java -jar TextCut.jar -c|-w -o OutputFile InputFile range");
             parser.printUsage(System.err);
             return;
         }
 
+        int begin = 0;
+        int end = range.length();
+        if (range.matches("-[\\d+]")) {
+            end = Integer.parseInt(range.substring(1));
+        }
+
+        if (range.matches("[\\d+]-")) {
+            begin = Integer.parseInt(range.substring(range.length() - 1));
+        }
+
+        if (range.matches("[\\d+]-[\\d+]")) {
+            begin = Integer.parseInt(range.split("-")[0]);
+            end = Integer.parseInt(range.split("-")[1]);
+        }
+
+        ArrayList<String> lines = new ArrayList<>();
         try {
-            if (symb) System.out.println("Wrong format (-c or -w)");
-
-            ArrayList<String> lines;
-
-            if (inputFileName.equals("")) lines = TextCmdReader.read();
-            else {
-                try{
-                    lines = FileWork.read(inputFileName);
-                } catch (FileNotFoundException e) {
-                    System.out.println("Incorrect input file name");
-                }
+            try{
+                lines = FileWork.read(inputFileName);
+            } catch (FileNotFoundException e) {
+                System.out.println("Incorrect input file name");
             }
 
-//Решить проблему со взаимодействием
-
-            Cutter cutter = new Cutter(symb, newRange);
-            ArrayList<String> newLines = cutter.cut(range, lines);
+        Cutter cutter = new Cutter(symb, begin, end);
+        ArrayList<String> newLines = cutter.cut(begin, end, lines, symb);
 
             try {
                 FileWork.write(newLines, outputFileName);
