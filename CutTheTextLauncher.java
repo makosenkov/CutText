@@ -9,8 +9,11 @@ import java.util.ArrayList;
 
 public final class CutTheTextLauncher {
 
-    @Option(name = "-c", usage = "Symbols")
-    private boolean symb = true;
+    @Option(name = "-c", usage = "Symbols", forbids = {"-w"})
+    private boolean symb = false;
+
+    @Option(name = "-w", usage = "Words", forbids = {"-c"})
+    private boolean word = false;
 
     @Option(name = "-o", metaVar = "OutputFile", usage = "output filename")
     private String outputFileName = "";
@@ -18,7 +21,7 @@ public final class CutTheTextLauncher {
     @Argument(metaVar = "InputFile", usage = "input filename")
     private String inputFileName = "";
 
-    @Argument(metaVar = "range", usage = "input range")
+    @Argument(required = true, metaVar = "range", usage = "input range", index = 1)
     private String range = "";
 
     public static void main(String[] args) {
@@ -37,37 +40,42 @@ public final class CutTheTextLauncher {
             return;
         }
 
-        int begin = 0;
-        int end = range.length();
-        if (range.matches("-[\\d+]")) {
-            end = Integer.parseInt(range.substring(1));
-        }
-
-        if (range.matches("[\\d+]-")) {
-            begin = Integer.parseInt(range.substring(range.length() - 1));
-        }
-
-        if (range.matches("[\\d+]-[\\d+]")) {
-            begin = Integer.parseInt(range.split("-")[0]);
-            end = Integer.parseInt(range.split("-")[1]);
-        }
 
         ArrayList<String> lines = new ArrayList<>();
         try {
-            try{
+            try {
                 lines = FileWork.read(inputFileName);
             } catch (FileNotFoundException e) {
                 System.out.println("Incorrect input file name");
+            }catch (IndexOutOfBoundsException e){
+                System.out.println("Empty file");
             }
 
-        Cutter cutter = new Cutter(symb, begin, end);
-        ArrayList<String> newLines = cutter.cut(begin, end, lines, symb);
-
-            try {
-                FileWork.write(newLines, outputFileName);
-            } catch (FileNotFoundException e) {
-                System.out.println("Incorrect output file name");
+            int begin = 0;
+            int end = 0;
+            if (range.matches("-[\\d+]")) {
+                end = Integer.parseInt(range.substring(1));
             }
+
+            if (range.matches("[\\d+]-")) {
+                begin = Integer.parseInt(range.substring(0, range.length() - 1));
+                end = lines.get(0).length();
+            }
+
+            if (range.matches("[\\d+]-[\\d+]")) {
+                begin = Integer.parseInt(range.split("-")[0]);
+                end = Integer.parseInt(range.split("-")[1]);
+            }
+
+            if (begin == 0 && end == 0) throw new IllegalArgumentException();
+            if (word) symb = false;
+            Cutter cutter = new Cutter(symb, begin, end);
+            ArrayList<String> newLines = cutter.cut(begin, end, lines, symb);
+
+
+            FileWork.write(newLines, outputFileName);
+            System.out.println("Success");
+
 
         } catch (IOException e) {
             System.err.println(e.getMessage());

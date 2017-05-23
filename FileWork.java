@@ -4,28 +4,24 @@ import java.util.ArrayList;
 public final class FileWork {
 
     public static ArrayList<String> read(String inputFileName) throws IOException {
-        ArrayList<String> lines = new ArrayList<>();
+        InputStream in = null;
         if (inputFileName.equals("")) {
-            BufferedInputStream inputStream = new BufferedInputStream(System.in);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                String line = reader.readLine();
-                do {
-                    lines.add(line);
-                } while (line != null);
-                reader.close();
-            }
+            in = System.in;
         } else {
-            FileInputStream inputStream = new FileInputStream(inputFileName);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = reader.readLine();
-            do {
-                lines.add(line);
-            } while (line != null);
-            reader.close();
+            File file = new File(inputFileName);
+            in = new FileInputStream(file);
         }
+        ArrayList<String> lines = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line = reader.readLine();
+        while ( line != null)
+        {
+            lines.add(line);
+            line = reader.readLine();
+        }
+        if (lines.size() == 0) throw new IndexOutOfBoundsException();
         return lines;
     }
-
 
     public static void write(ArrayList<String> newLines, String outputFileName) throws IOException {
         try (FileOutputStream outputStream = new FileOutputStream(outputFileName)) {
@@ -35,6 +31,10 @@ public final class FileWork {
                     writer.newLine();
                 }
                 writer.close();
+            }
+        }catch (FileNotFoundException e) {
+            for (String line: newLines) {
+                System.out.println(line);
             }
         }
     }
