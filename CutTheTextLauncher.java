@@ -47,7 +47,7 @@ public final class CutTheTextLauncher {
                 lines = FileWork.read(inputFileName);
             } catch (FileNotFoundException e) {
                 System.out.println("Incorrect input file name");
-            }catch (IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 System.out.println("Empty file");
             }
 

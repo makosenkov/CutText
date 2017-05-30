@@ -18,6 +18,7 @@ public final class FileWork {
             lines.add(line);
             line = reader.readLine();
         }
+
         if (lines.size() == 0) throw new IndexOutOfBoundsException();
         return lines;
     }
@@ -31,10 +32,12 @@ public final class FileWork {
             out = new FileOutputStream(file);
         }
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+
         for (String line : newLines) {
             writer.write(line);
             writer.newLine();
         }
+
         writer.close();
     }
 }

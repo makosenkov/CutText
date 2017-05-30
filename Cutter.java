@@ -26,6 +26,7 @@ public final class Cutter {
             } else {
                 //По словам
                 String[] words = line.split(" ");
+
                 if (begin >= words.length) builder.append("\n");
                 else {
                     if (end == 1000) end = words.length;
