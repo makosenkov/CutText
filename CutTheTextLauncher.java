@@ -53,21 +53,22 @@ public final class CutTheTextLauncher {
 
             int begin = 0;
             int end = 0;
-            if (range.matches("-[\\d+]")) {
+            if (range.matches("-\\d+")) {
                 end = Integer.parseInt(range.substring(1));
             }
 
-            if (range.matches("[\\d+]-")) {
+            if (range.matches("\\d+-")) {
                 begin = Integer.parseInt(range.substring(0, range.length() - 1));
-                end = lines.get(0).length();
+                end = 1000;
             }
 
-            if (range.matches("[\\d+]-[\\d+]")) {
+            if (range.matches("\\d+-\\d+")) {
                 begin = Integer.parseInt(range.split("-")[0]);
                 end = Integer.parseInt(range.split("-")[1]);
             }
+            boolean BeginMoreThanEnd = begin >= end;
+            if (BeginMoreThanEnd) throw new IllegalArgumentException("Wrong range");
 
-            if (begin == 0 && end == 0) throw new IllegalArgumentException();
             if (word) symb = false;
             Cutter cutter = new Cutter(symb, begin, end);
             ArrayList<String> newLines = cutter.cut(begin, end, lines, symb);
