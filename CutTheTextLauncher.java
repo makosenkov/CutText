@@ -53,8 +53,8 @@ public final class CutTheTextLauncher {
 
             int begin = 0;
             int end = 0;
-            if (range.matches("-\\d+")) {
-                end = Integer.parseInt(range.substring(1));
+            if (range.matches(" -\\d+")) {
+                end = Integer.parseInt(range.substring(2));
             }
 
             if (range.matches("\\d+-")) {

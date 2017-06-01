@@ -20,8 +20,8 @@ public final class Cutter {
             if (symb) {
                 if (begin >= line.length()) builder.append("\n");
                 else {
-                    if (buf == 1000 || buf > line.length()) buf = line.length();
-                    builder.append(line, begin, buf);
+                    if (buf == 1000 || buf > line.length()) buf = line.length() - 1;
+                    builder.append(line, begin, buf + 1);
                     newLines.add(builder.toString());
                 }
 
