@@ -14,13 +14,14 @@ public final class Cutter {
     public ArrayList<String> cut(int begin, int end, ArrayList<String> lines, boolean symb) {
         ArrayList<String> newLines = new ArrayList<>();
         for (String line : lines) {
+            int buf = end;
             StringBuilder builder = new StringBuilder();
             //Посимвольно
             if (symb) {
                 if (begin >= line.length()) builder.append("\n");
                 else {
-                    if (end == 1000) end = line.length();
-                    builder.append(line, begin, end);
+                    if (buf == 1000 || buf > line.length()) buf = line.length();
+                    builder.append(line, begin, buf);
                     newLines.add(builder.toString());
                 }
 
@@ -28,12 +29,13 @@ public final class Cutter {
                 //По словам
                 String[] words = line.split(" ");
 
-                if (begin >= words.length) builder.append("\n");
+                if (begin >= words.length || line.equals("")) builder.append("\n");
                 else {
-                    if (end == 1000) end = words.length;
-                    for (int i = begin + 1; i <= words.length; i++) {
+
+                    if (buf == 1000 || buf > words.length) buf = words.length;
+                    for (int i = begin + 1; i <= buf; i++) {
                         builder.append(words[i - 1]);
-                        if (i != end) builder.append(" ");
+                        if (i != buf) builder.append(" ");
                     }
                     newLines.add(builder.toString());
                 }
