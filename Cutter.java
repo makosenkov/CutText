@@ -30,7 +30,7 @@ public final class Cutter {
                 if (begin >= words.length) builder.append("\n");
                 else {
                     if (end == 1000) end = words.length;
-                    for (int i = begin + 1; i <= end; i++) {
+                    for (int i = begin + 1; i <= words.length; i++) {
                         builder.append(words[i - 1]);
                         if (i != end) builder.append(" ");
                     }
