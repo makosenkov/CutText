@@ -23,7 +23,7 @@ public final class Cutter {
                     builder.append(line, begin, end);
                     newLines.add(builder.toString());
                 }
-                
+
             } else {
                 //По словам
                 String[] words = line.split(" ");
