@@ -6,6 +6,7 @@ import org.kohsuke.args4j.Option;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public final class CutTheTextLauncher {
 
@@ -41,43 +42,37 @@ public final class CutTheTextLauncher {
         }
 
 
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         try {
-            try {
-                lines = FileWork.read(inputFileName);
-            } catch (FileNotFoundException e) {
-                System.out.println("Incorrect input file name");
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println("Empty file");
-            }
 
             int begin = 0;
             int end = 0;
             if (range.matches(" -\\d+")) {
+                begin = Cutter.myMagicConstant;
                 end = Integer.parseInt(range.substring(2));
             }
 
             if (range.matches("\\d+-")) {
                 begin = Integer.parseInt(range.substring(0, range.length() - 1));
-                end = 1000;
+                end = Cutter.myMagicConstant;
             }
 
             if (range.matches("\\d+-\\d+")) {
                 begin = Integer.parseInt(range.split("-")[0]);
                 end = Integer.parseInt(range.split("-")[1]);
             }
-            boolean BeginMoreThanEnd = begin >= end;
+            boolean BeginMoreThanEnd = begin >= end && end != Cutter.myMagicConstant && begin != Cutter.myMagicConstant;
             if (BeginMoreThanEnd) throw new IllegalArgumentException("Wrong range");
 
             if (word) symb = false;
-            Cutter cutter = new Cutter(symb, begin, end);
-            ArrayList<String> newLines = cutter.cut(begin, end, lines, symb);
 
+            try {
+                lines = FileWork.readAndCut(inputFileName, begin, end, symb);
+            } catch (FileNotFoundException e) {
+                System.out.println("Incorrect input file name");
+            }
 
-            FileWork.write(newLines, outputFileName);
-            System.out.println("Success");
-
-
+            FileWork.write(lines, outputFileName);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
