@@ -1,0 +1,3 @@
+input = arrayOf("-c", "-o", "tests/files/output/out8.txt", "tests/files/input/in8.txt", " -500")
+        CutTheTextLauncher.main(input)
+        assertFileContent("tests/files/output/out8.txt", "tests/files/expected/exp8.txt")
